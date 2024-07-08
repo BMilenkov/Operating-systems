@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile-Server
+    ports:
+      - "7000:7000"
+    networks:
+      - server-client-private-network
+      - server-logger-private-network
+    environment:
+      - SERVER_PORT=7000
+      - LOGGER_SERVERNAME=logger
+      - LOGGER_SERVER-PORT=7050
+    depends_on:
+      - logger
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile-Client
+    environment:
+      - SERVER_NAME=server
+      - SERVER_PORT=7000
+    deploy:
+      replicas: 15
+    depends_on:
+        - server
+    networks:
+        - server-client-private-network
+
+  logger:
+    build:
+      context: .
+      dockerfile: Dockerfile-Logger
+    ports:
+      - "7050:7050"
+    environment:
+      - SERVER_PORT=7050
+      - LOG_FILE=./data/log.txt
+      - COUNTER_FILE=./data/count.bin
+    networks:
+      - server-logger-private-network
+    volumes:
+      - ./vol:/usr/src/networkapp/data  # mapping the volume so we can see the results
+
+networks:
+  server-client-private-network:
+    driver: bridge
+  server-logger-private-network:
+    driver: bridge
+
+#volumes:
+#   vol:
+
