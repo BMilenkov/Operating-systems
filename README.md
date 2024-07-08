@@ -1,4 +1,4 @@
-#Welcome to my Operating systems repository!
+Welcome to my Operating systems repository!
 
 This repository contains all of my meticulously solved coding problems from the Operating systems course at @FCSE-Skopje.
 
